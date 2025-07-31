@@ -1,0 +1,8 @@
+### 대기열 등록
+POST {{flow-api}}/api/v1/queues?userId=104
+
+### 대기열 입장 허용
+POST {{flow-api}}/api/v1/queues/allow?count=1
+
+### 대기열 내 사용자 조회
+GET {{flow-api}}/api/v1/queues/allowed?userId=104
