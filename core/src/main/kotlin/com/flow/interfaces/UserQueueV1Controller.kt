@@ -42,7 +42,17 @@ class UserQueueV1Controller(
         @RequestParam(name = "userId") userId: Long
     ): Mono<ApiResponse<UserQueueV1DTO.AllowedUserResponse>> {
         return userQueueService.isAllowed(queue, userId)
-            .map{allowed -> UserQueueV1DTO.AllowedUserResponse.from(allowed)}
+            .map(UserQueueV1DTO.AllowedUserResponse::from)
+            .map{ ApiResponse.success(it) }
+    }
+
+    @GetMapping("/rank")
+    fun getRank(
+        @RequestParam(name = "queue", defaultValue = "default") queue: String,
+        @RequestParam(name = "userId") userId: Long
+    ): Mono<ApiResponse<UserQueueV1DTO.RankNumberResponse>> {
+        return userQueueService.getRank(queue, userId)
+            .map(UserQueueV1DTO.RankNumberResponse::from)
             .map{ ApiResponse.success(it) }
     }
 

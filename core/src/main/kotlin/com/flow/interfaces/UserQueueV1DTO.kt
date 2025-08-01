@@ -39,4 +39,16 @@ class UserQueueV1DTO {
             }
         }
     }
+
+    data class RankNumberResponse(
+        val rank: Long,
+    ) {
+        companion object {
+            fun from(rank: Long): RankNumberResponse {
+                return RankNumberResponse(
+                    rank = rank
+                )
+            }
+        }
+    }
 }
