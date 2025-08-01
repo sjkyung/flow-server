@@ -2,12 +2,15 @@ package com.flow.interfaces
 
 import com.flow.application.UserQueueService
 import com.flow.support.ApiResponse
+import org.springframework.http.ResponseCookie
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
+import java.time.Duration
 
 @RestController
 @RequestMapping("/api/v1/queues")
@@ -54,6 +57,28 @@ class UserQueueV1Controller(
         return userQueueService.getRank(queue, userId)
             .map(UserQueueV1DTO.RankNumberResponse::from)
             .map{ ApiResponse.success(it) }
+    }
+
+
+    @GetMapping("/touch")
+    fun touch(
+        @RequestParam(name = "queue", defaultValue = "default") queue: String,
+        @RequestParam(name = "userId") userId: Long,
+        exchange : ServerWebExchange
+    ): Mono<ApiResponse<String>>{
+        return Mono.defer {
+            userQueueService.generateToken(queue, userId)
+                .map { token ->
+                    exchange.response.addCookie(
+                        ResponseCookie
+                            .from("user-queue-$queue-$userId", token)
+                            .maxAge(Duration.ofSeconds(600)) // 쿠키 유효시간 10분 예시
+                            .path("/")
+                            .build()
+                    )
+                    token
+                }.map { token -> ApiResponse.success(token) }
+        }
     }
 
 }
