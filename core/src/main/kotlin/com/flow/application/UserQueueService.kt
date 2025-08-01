@@ -22,4 +22,9 @@ class UserQueueService(
         return userQueueRepository.isAllowed(queue, userId);
     }
 
+    //해당 유저의 몇번째 순번인지 조회
+    fun getRank(queue: String, userId: Long): Mono<Long> {
+        return userQueueRepository.getRank(queue, userId);
+    }
+
 }

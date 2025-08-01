@@ -9,4 +9,6 @@ interface UserQueueRepository {
     fun allowUser(queue: String, count: Long): Mono<Long>
 
     fun isAllowed(queue: String, userId: Long): Mono<Boolean>
+
+    fun getRank(queue: String, userId: Long): Mono<Long>
 }

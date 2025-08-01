@@ -115,4 +115,24 @@ class UserQueueServiceTest @Autowired constructor(
             .verifyComplete()
     }
 
+
+    @Test
+    fun emptyGetRank() {
+        StepVerifier.create(userQueueService.getRank("default", 1000))
+            .expectNext(-1)
+            .verifyComplete()
+    }
+
+
+
+    @Test
+    fun getRank() {
+        StepVerifier.create(userQueueService.registerWaitQueue("default", 100)
+            .then(userQueueService.registerWaitQueue("default", 101))
+            .then(userQueueService.registerWaitQueue("default", 102))
+            .then(userQueueService.getRank("default", 101)))
+            .expectNext(2L)
+            .verifyComplete()
+    }
+
 }

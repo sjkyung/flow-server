@@ -52,4 +52,12 @@ class UserQueueRepositoryImpl(
         .map { rank -> rank >= 0 }
     }
 
+    override fun getRank(queue: String, userId: Long): Mono<Long> {
+        return reactiveRedisTemplate.opsForZSet().rank(
+            USER_QUEUE_WAIT_KEY.format(queue),
+            userId.toString()
+        ).defaultIfEmpty(-1L)
+        .map { rank -> if(rank >= 0) rank +1 else rank }
+    }
+
 }
