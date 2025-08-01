@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>접속자 대기열 시스템</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 480px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .message h1 {
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        .queue-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2a7de1;
+            margin: 10px 0;
+        }
+
+        .message p {
+            color: #666666;
+            font-size: 15px;
+            margin: 8px 0;
+        }
+
+        #updated {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #999999;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .message {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="message">
+    <h1>현재 접속자가 많습니다</h1>
+    <p>현재 대기 순번은</p>
+    <div class="queue-number" id="number">[[${number}]]</div>
+    <p>곧 접속이 가능하니 잠시만 기다려주세요.</p>
+    <p id="updated"></p>
+</div>
+
+<script>
+
+    function fetchWaitingRank() {
+        const queue = '[[${queue}]]';
+        const userId = '[[${userId}]]';
+
+        const queryParam = new URLSearchParams({ququeue: queue, userId: userId});
+        fetch('api/v1/queues/rank?' + queryParam)
+            .then(response => response.json())
+            .then(data => {
+                //대기가 없는 경우
+                if(data.data.rank < 0){
+                    document.querySelector('#number').innerHTML = 0;
+                    updateTime()
+
+                    const newUrl = window.location.origin + window.location.pathname + window.location.search;
+                    window.location.href  = newUrl;
+                    return;
+                }
+
+
+
+                document.querySelector('#number').innerHTML = data.data.rank;
+                updateTime()
+            })
+            .catch(
+                error => console.log(error)
+            )
+    }
+
+
+    // 현재 시간 업데이트
+    function updateTime() {
+        const now = new Date();
+        const formatted = now.toLocaleString("ko-KR", {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('updated').textContent = `마지막 갱신 시간: ${formatted}`;
+    }
+
+    //3초마다 실행
+    setInterval(fetchWaitingRank, 3000);
+</script>
+</body>
+</html>
