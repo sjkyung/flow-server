@@ -11,6 +11,10 @@ server:
   port: 8600
 
 
+scheduler:
+  enabled: true
+
+
 ---
 spring:
   config:
@@ -22,5 +26,6 @@ spring:
       port: 63790
 
 
-
+scheduler:
+  enabled: false
 

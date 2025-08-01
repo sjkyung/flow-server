@@ -4,7 +4,9 @@ import com.flow.application.UserQueueRepository
 import com.flow.support.ApplicationException
 import com.flow.support.ErrorCode
 import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.core.ScanOptions
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Instant
 
@@ -14,6 +16,7 @@ class UserQueueRepositoryImpl(
 ) : UserQueueRepository {
 
     private val USER_QUEUE_WAIT_KEY = "users:queue:%s:wait"
+    private val USER_QUEUE_WAIT_KEY_FOR_SCAN = "users:queue:*:wait"
     private val USER_QUEUE_PROCEEED_KEY = "users:queue:%s:proceed"
 
     override fun registerWaitQueue(queue: String, userId: Long): Mono<Long> {
@@ -59,5 +62,17 @@ class UserQueueRepositoryImpl(
         ).defaultIfEmpty(-1L)
         .map { rank -> if(rank >= 0) rank +1 else rank }
     }
+
+    override fun allowUsersInAllQueues(
+        count: Long
+    ): Flux<Pair<String, Long>> {
+        return reactiveRedisTemplate.scan(ScanOptions.scanOptions()
+            .match(USER_QUEUE_WAIT_KEY_FOR_SCAN).count(100).build())
+            .map{key -> key.split(":")[2]}
+            .flatMap { queue ->
+                allowUser(queue, count).map { allowed -> queue to allowed }
+            }
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.flow.application
 
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
@@ -25,6 +26,11 @@ class UserQueueService(
     //해당 유저의 몇번째 순번인지 조회
     fun getRank(queue: String, userId: Long): Mono<Long> {
         return userQueueRepository.getRank(queue, userId);
+    }
+
+
+    fun allowUsersInAllQueues(maxAllowUserCount: Long): Flux<Pair<String,Long>> {
+        return userQueueRepository.allowUsersInAllQueues(maxAllowUserCount);
     }
 
 }
