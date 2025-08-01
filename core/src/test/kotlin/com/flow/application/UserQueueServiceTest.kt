@@ -115,6 +115,24 @@ class UserQueueServiceTest @Autowired constructor(
             .verifyComplete()
     }
 
+    @Test
+    fun isNotAllowedByToken() {
+        StepVerifier.create(userQueueService.isAllowedByToken("default", 100, ""))
+            .expectNext(false)
+            .verifyComplete()
+    }
+
+
+    @Test
+    fun isAllowedByToken() {
+        StepVerifier.create(userQueueService.isAllowedByToken("default",
+            100,
+            "d333a5d4eb24f3f5cdd767d79b8c01aad3cd73d3537c70dec430455d37afe4b8")
+        )
+            .expectNext(true)
+            .verifyComplete()
+    }
+
 
     @Test
     fun emptyGetRank() {
@@ -124,7 +142,6 @@ class UserQueueServiceTest @Autowired constructor(
     }
 
 
-
     @Test
     fun getRank() {
         StepVerifier.create(userQueueService.registerWaitQueue("default", 100)
@@ -132,6 +149,14 @@ class UserQueueServiceTest @Autowired constructor(
             .then(userQueueService.registerWaitQueue("default", 102))
             .then(userQueueService.getRank("default", 101)))
             .expectNext(2L)
+            .verifyComplete()
+    }
+
+
+    @Test
+    fun generateToken() {
+        StepVerifier.create(userQueueService.generateToken("default", 100))
+            .expectNext("d333a5d4eb24f3f5cdd767d79b8c01aad3cd73d3537c70dec430455d37afe4b8")
             .verifyComplete()
     }
 
