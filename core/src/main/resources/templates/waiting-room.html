@@ -95,16 +95,17 @@
             .then(data => {
                 //대기가 없는 경우
                 if(data.data.rank < 0){
-                    document.querySelector('#number').innerHTML = 0;
-                    updateTime()
+                    fetch('api/v1/queues/touch?' + queryParam)
+                        .then(response => {
+                            document.querySelector('#number').innerHTML = 0;
+                            updateTime()
 
-                    const newUrl = window.location.origin + window.location.pathname + window.location.search;
-                    window.location.href  = newUrl;
+                            const newUrl = window.location.origin + window.location.pathname + window.location.search;
+                            window.location.href = newUrl;
+                        })
+                        .catch(error => console.error(error));
                     return;
                 }
-
-
-
                 document.querySelector('#number').innerHTML = data.data.rank;
                 updateTime()
             })
