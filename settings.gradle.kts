@@ -1,6 +1,6 @@
 rootProject.name = "flow"
 
-include(":core", ":website")
+include(":flow-core", ":flow-website")
 
 
 pluginManagement {

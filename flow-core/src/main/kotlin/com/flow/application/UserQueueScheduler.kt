@@ -12,7 +12,7 @@ class UserQueueScheduler(
 ) {
 
     private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
-    private val maxAllowUserCount = 3L
+    private val maxAllowUserCount = 100L
 
     @Scheduled(initialDelay = 5000,fixedDelay = 10000)
     fun shouldAllowUser() {
