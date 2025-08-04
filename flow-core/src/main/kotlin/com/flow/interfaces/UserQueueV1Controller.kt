@@ -42,9 +42,10 @@ class UserQueueV1Controller(
     @GetMapping("/allowed")
     fun allowed(
         @RequestParam(name = "queue", defaultValue = "default") queue: String,
-        @RequestParam(name = "userId") userId: Long
+        @RequestParam(name = "userId") userId: Long,
+        @RequestParam(name = "token") token: String,
     ): Mono<ApiResponse<UserQueueV1DTO.AllowedUserResponse>> {
-        return userQueueService.isAllowed(queue, userId)
+        return userQueueService.isAllowedByToken(queue, userId, token)
             .map(UserQueueV1DTO.AllowedUserResponse::from)
             .map{ ApiResponse.success(it) }
     }
