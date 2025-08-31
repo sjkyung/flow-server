@@ -1,6 +1,6 @@
 spring:
   application:
-    name: website
+    name: flow-website
 
 server:
   port: 8500

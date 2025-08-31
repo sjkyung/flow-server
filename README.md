@@ -39,4 +39,4 @@ Redis Sorted Set(ZSET)을 기반으로 대기/진입 큐를 분리하여 효율�
 
 ## 기타 참고 자료
 - [API 명세서(Swagger) (작성예정)](https://이미지)
-- [기술 블로그 포스팅 (작성예정)](https://notion링크)
+- [기술 블로그 포스팅 (작성중)](https://exuberant-robe-7c7.notion.site/23ff537285fd8076ab9fd63ce75052a5?source=copy_link)
